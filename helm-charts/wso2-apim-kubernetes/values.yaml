@@ -11,6 +11,9 @@
 
 # Default values for wso2-apim.
 acp:
+  # Enable/disable APK installation
+  enabled: true
+  
   aws:
     # -- If AWS is used as the cloud provider
     enabled: false

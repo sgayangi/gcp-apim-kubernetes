@@ -5,17 +5,34 @@
 ✅ Kubernetes cluster 1.24+ running  
 ✅ Helm 3.x installed  
 ✅ kubectl configured  
+✅ **NGINX Ingress Controller installed** (see step 1 below)  
 ✅ At least 8GB RAM, 4 CPU cores available in cluster  
 
 ## Installation Steps
 
-### 1. Clone or Navigate to Repository
+### 1. Install NGINX Ingress Controller (REQUIRED)
+
+**This must be done before installing the Helm chart.**
+
+```bash
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.14.0/deploy/static/provider/cloud/deploy.yaml
+
+# Verify NGINX Ingress installation
+kubectl get pods --namespace=ingress-nginx
+
+kubectl wait --namespace ingress-nginx \
+  --for=condition=ready pod \
+  --selector=app.kubernetes.io/component=controller \
+  --timeout=120s
+```
+
+### 2. Clone or Navigate to Repository
 
 ```bash
 cd /path/to/gcp-apim-kubernetes/helm-charts/wso2-apim-kubernetes
 ```
 
-### 2. Add Helm Repositories (Optional - for reference)
+### 3. Add Helm Repositories
 
 ```bash
 helm repo add wso2 https://helm.wso2.com
@@ -24,107 +41,102 @@ helm repo add wso2apkagent https://github.com/wso2/product-apim-tooling/releases
 helm repo update
 ```
 
-### 3. Update Dependencies
+### 4. Update Dependencies
 
 ```bash
 helm dependency update
 ```
 
 This downloads:
-- `apk-helm-1.3.0-1.tgz` (from GitHub)
-- `apim-apk-agent-1.3.0.tgz` (from GitHub)
-
-The APIM chart is already included locally as a patched version in `charts/wso2am-all-in-one-patched/`.
-
-### 4. Create Namespace
-
-```bash
-kubectl create namespace apim-kubernetes
-```
+- `wso2am-acp-4.5.0-5.tgz` (APIM-ACP from WSO2)
+- `apk-helm-1.3.0-1.tgz` (APK from GitHub)
+- `apim-apk-agent-1.3.0.tgz` (APK Agent from GitHub)
 
 ### 5. Install the Chart
+
+**All components will be deployed to the default namespace.**
 
 **Basic installation (all components enabled):**
 
 ```bash
-helm install wso2-stack . -n apim-kubernetes
+helm install apim .
 ```
 
 **Custom installation with values file:**
 
 ```bash
-helm install wso2-stack . -n apim-kubernetes -f custom-values.yaml
-```
-
-**Install with specific components disabled:**
-
-```bash
-# Only APIM and APK (no APK Agent)
-helm install wso2-stack . -n apim-kubernetes \
-  --set apkagent.enabled=false
-
-# Only APIM (no APK, no Agent)
-helm install wso2-stack . -n apim-kubernetes \
-  --set apk.enabled=false \
-  --set apkagent.enabled=false
-
-# Enable nginx ingress
-helm install wso2-stack . -n apim-kubernetes \
-  --set nginxIngress.enabled=true
+helm install apim . -f custom-values.yaml
 ```
 
 ### 6. Verify Installation
 
 ```bash
-# Check all pods
-kubectl get pods -n apim-kubernetes
+# Check all pods in default namespace
+kubectl get pods -w
 
 # Check services
-kubectl get svc -n apim-kubernetes
+kubectl get svc
 
-# Check ingress (if enabled)
-kubectl get ingress -n apim-kubernetes
+# Check ingress resources
+kubectl get ingress
+
+# Check NGINX Ingress Controller
+kubectl get pods -n ingress-nginx
 
 # Get deployment status
-helm status wso2-stack -n apim-kubernetes
+helm status apim
 ```
 
 ### 7. Access the Services
 
 Once pods are running, you can access:
 
-**APIM Management Console:**
-- URL: `https://am.wso2.com` (configure DNS or use port-forward)
+**APIM-ACP Publisher:**
+- URL: https://am.wso2.com/publisher
 - Default credentials: `admin` / `admin`
 
-**Port Forwarding (for local testing):**
+**Note:** Access URLs depend on your ingress configuration and DNS setup. Check the ingress resources:
 
 ```bash
-# APIM Management Console
-kubectl port-forward -n apim-kubernetes svc/wso2-stack-apim-am-service 9443:9443
-
-# Access at: https://localhost:9443/carbon
+kubectl get ingress
 ```
 
 ## Troubleshooting
 
+### Check NGINX Ingress Controller
+
+```bash
+# Verify NGINX is running
+kubectl get pods -n ingress-nginx
+
+# Check NGINX logs
+kubectl logs -n ingress-nginx -l app.kubernetes.io/name=ingress-nginx
+```
+
 ### Check Logs
 
 ```bash
-# APIM logs
-kubectl logs -n apim-kubernetes -l deployment=wso2-stack-apim-am -f
+# List all pods in default namespace
+kubectl get pods
+
+# APIM-ACP logs
+kubectl logs -f <acp-pod-name>
 
 # APK logs
-kubectl logs -n apim-kubernetes -l app.kubernetes.io/name=apk-helm -f
+kubectl logs -f <apk-pod-name>
 
 # APK Agent logs
-kubectl logs -n apim-kubernetes -l app=apim-apk-agent -f
+kubectl logs -f <apkagent-pod-name>
 ```
 
 ### Common Issues
 
+**NGINX Ingress not installed:**
+- Error: Ingress resources cannot be created
+- Solution: Install NGINX Ingress Controller (see Step 1)
+
 **Pods stuck in Pending:**
-- Check PV/PVC status: `kubectl get pvc -n apim-kubernetes`
+- Check PV/PVC status: `kubectl get pvc`
 - Check node resources: `kubectl describe nodes`
 
 **ImagePullBackOff:**
@@ -132,29 +144,28 @@ kubectl logs -n apim-kubernetes -l app=apim-apk-agent -f
 - Check network connectivity to Docker registries
 
 **CrashLoopBackOff:**
-- Check pod logs for specific errors
+- Check pod logs for specific errors: `kubectl logs <pod-name>`
 - Verify resource limits and requests
 - Ensure PVCs are bound and accessible
 
 ## Upgrade
 
 ```bash
-# Upgrade to new values
-helm upgrade wso2-stack . -n apim-kubernetes -f new-values.yaml
+# Update dependencies
+helm dependency update
 
-# Upgrade with specific values
-helm upgrade wso2-stack . -n apim-kubernetes \
-  --set apim.wso2.apim.version=4.5.0
+# Upgrade to new values
+helm upgrade apim . -f new-values.yaml
 ```
 
 ## Uninstall
 
 ```bash
 # Uninstall the release
-helm uninstall wso2-stack -n apim-kubernetes
+helm uninstall apim
 
-# Delete namespace (optional - this deletes PVCs too!)
-kubectl delete namespace apim-kubernetes
+# Optionally remove NGINX Ingress Controller
+kubectl delete -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.14.0/deploy/static/provider/cloud/deploy.yaml
 ```
 
 ## Chart Configuration
@@ -163,23 +174,23 @@ kubectl delete namespace apim-kubernetes
 
 | Parameter | Description | Default |
 |-----------|-------------|---------|
-| `apim.enabled` | Enable WSO2 APIM | `true` |
+| `acp.enabled` | Enable WSO2 APIM-ACP | `true` |
 | `apk.enabled` | Enable WSO2 APK | `true` |
 | `apkagent.enabled` | Enable APK Agent | `true` |
-| `nginxIngress.enabled` | Install nginx ingress | `false` |
-| `namespace.name` | Kubernetes namespace | `apim-kubernetes` |
+
+**Note:** All components are deployed to the **default namespace**. NGINX Ingress Controller must be installed separately.
 
 See [values.yaml](./values.yaml) for complete configuration options.
 
 ## Resources Created
 
-The chart creates approximately **199 Kubernetes resources** including:
-- Deployments/StatefulSets
+The chart creates resources in the **default namespace** including:
+- Deployments/StatefulSets for APIM-ACP, APK, and APK Agent
 - Services (ClusterIP, NodePort, LoadBalancer)
 - ConfigMaps and Secrets
 - ServiceAccounts and RBAC
 - PersistentVolumeClaims
-- Ingress resources
+- Ingress resources (requires NGINX Ingress Controller)
 - Custom Resource Definitions (CRDs)
 
 ## Next Steps
