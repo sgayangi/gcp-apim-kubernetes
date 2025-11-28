@@ -20,13 +20,13 @@ x-google-marketplace:
   #           type: REQUIRE_ONE_NODE_PER_REPLICA
   #   k8sVersion: ">=1.24.0"
 
-  # images:
-  #   "":
-  #     properties:
-  #       wso2.deployment.wso2.image.repository:
-  #         type: REPO_WITH_REGISTRY
-  #       wso2.deployment.wso2.image.tag:
-  #         type: TAG
+  images:
+    "":
+      properties:
+        wso2.deployment.wso2.image.repository:
+          type: REPO_WITH_REGISTRY
+        wso2.deployment.wso2.image.tag:
+          type: TAG
 
 properties:
   name:
