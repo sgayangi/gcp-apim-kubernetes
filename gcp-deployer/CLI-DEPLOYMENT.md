@@ -2,6 +2,15 @@
 
 This guide explains how to deploy WSO2 APIM Kubernetes application using command-line tools.
 
+## Clone Deployment Assets
+
+First, clone the deployment repository:
+
+```bash
+git clone https://github.com/sgayangi/gcp-apim-kubernetes.git
+cd gcp-apim-kubernetes/gcp-deployer
+```
+
 ## Prerequisites
 
 1. **kubectl** - Kubernetes command-line tool

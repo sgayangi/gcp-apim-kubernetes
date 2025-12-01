@@ -6,10 +6,6 @@ properties:
   # Tester image for running verification tests
   tester.image:
     type: string
+    default: $REGISTRY/wso2-apim/tester:$TAG
     x-google-marketplace:
-      type: IMAGE
-      image:
-        generatedProperties:
-          splitByColon:
-            before: tester.image.repository
-            after: tester.image.tag
+      type: FULL
