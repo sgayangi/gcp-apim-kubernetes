@@ -463,7 +463,7 @@ acp:
       #   username: ""
       #   password: ""
       image:
-        "us-docker.pkg.dev/wso2-marketplace-public/wso2-marketplace/wso2am-acp:4.5"
+        "thivindu/wso2am-acp:4.5.0"
 
         # -- Registry containing the image
         # registry: "us-east1-docker.pkg.dev"
@@ -639,7 +639,7 @@ apk:
             strategy: RollingUpdate
             replicas: 1
             imagePullPolicy: Always
-            image: us-docker.pkg.dev/wso2-marketplace-public/wso2-marketplace/apk-config-deployer-service:4.5
+            image: thivindu/apk-config-deployer-service:4.5.0
           # debug: true
           # configs:
           #   tls:
@@ -666,7 +666,7 @@ apk:
             strategy: RollingUpdate
             replicas: 1
             imagePullPolicy: Always
-            image: us-docker.pkg.dev/wso2-marketplace-public/wso2-marketplace/apk-adapter:4.5
+            image: thivindu/apk-adapter:4.5.0
             security:
               sslHostname: "adapter"
             logging:
@@ -700,7 +700,7 @@ apk:
             strategy: RollingUpdate
             replicas: 1
             imagePullPolicy: Always
-            image: us-docker.pkg.dev/wso2-marketplace-public/wso2-marketplace/apk-common-controller:4.5
+            image: thivindu/apk-common-controller:4.5.0
             security:
               sslHostname: "commoncontroller"
             # configs:
@@ -727,7 +727,7 @@ apk:
             strategy: RollingUpdate
             replicas: 1
             imagePullPolicy: Always
-            image: us-docker.pkg.dev/wso2-marketplace-public/wso2-marketplace/apk-ratelimiter:4.5
+            image: thivindu/apk-ratelimiter:4.5.0
             security:
               sslHostname: "ratelimiter"
             # configs:
@@ -757,7 +757,7 @@ apk:
                 failureThreshold: 5
               strategy: RollingUpdate
               imagePullPolicy: Always
-              image: us-docker.pkg.dev/wso2-marketplace-public/wso2-marketplace/apk-router:4.5
+              image: thivindu/apk-router:4.5.0
               # configs:
               #   tls:
               #     secretName: "router-cert"
@@ -788,7 +788,7 @@ apk:
                 failureThreshold: 5
               strategy: RollingUpdate
               imagePullPolicy: Always
-              image: us-docker.pkg.dev/wso2-marketplace-public/wso2-marketplace/apk-enforcer:4.5
+              image: thivindu/apk-enforcer:4.5.0
               security:
                 sslHostname: "enforcer"
               #            logging:
@@ -985,8 +985,8 @@ apkagent:
       imagePullSecrets: ""
   replicaCount: 1
   image:
-    repository: us-docker.pkg.dev/wso2-marketplace-public/wso2-marketplace/apim-apk-agent
-    tag: 4.5
+    repository: thivindu/apim-apk-agent
+    tag: 4.5.0
     pullPolicy: Always
   service:
     name: apim-apk-agent-service
