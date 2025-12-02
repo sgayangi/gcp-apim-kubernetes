@@ -20,56 +20,14 @@ x-google-marketplace:
     k8sVersion: ">=1.24.0"
 
   images:
-    # Main APIM Control Plane image
-    wso2am-acp:
+    deployer:
       properties:
-        acp.deployment.image:
-          type: FULL
-
-    # APK images
-    apk-config-deployer-service:
-      properties:
-        apk.wso2.apk.dp.configdeployer.deployment.image:
-          type: FULL
-
-    apk-adapter:
-      properties:
-        apk.wso2.apk.dp.adapter.deployment.image:
-          type: FULL
-
-    apk-common-controller:
-      properties:
-        apk.wso2.apk.dp.commonController.deployment.image:
-          type: FULL
-
-    apk-ratelimiter:
-      properties:
-        apk.wso2.apk.dp.ratelimiter.deployment.image:
-          type: FULL
-
-    apk-router:
-      properties:
-        apk.wso2.apk.dp.gatewayRuntime.deployment.router.image:
-          type: FULL
-
-    apk-enforcer:
-      properties:
-        apk.wso2.apk.dp.gatewayRuntime.deployment.enforcer.image:
-          type: FULL
-
-    # APK Agent image
-    apim-apk-agent:
-      properties:
-        apkagent.image.repository:
-          type: REPO_WITH_REGISTRY
-        apkagent.image.tag:
+        imageRegistry:
+          type: REGISTRY
+        imageRepo:
+          type: REPO_WITHOUT_REGISTRY
+        imageTag:
           type: TAG
-
-    # Tester image for verification
-    tester:
-      properties:
-        tester.image:
-          type: FULL
 
 properties:
   name:
@@ -86,126 +44,6 @@ properties:
     title: Namespace
     description: The Kubernetes namespace where the application will be deployed
 
-  # deployerServiceAccount:
-  #   type: string
-  #   title: Deployer Service Account
-  #   description: Service account used by the deployer
-  #   x-google-marketplace:
-  #     type: SERVICE_ACCOUNT
-  #     serviceAccount:
-  #       description: Service account for the deployer
-  #       roles:
-  #         - type: ClusterRole
-  #           rulesType: PREDEFINED
-  #           rulesFromRoleName: cluster-admin
-
-  # GCP Configuration
-  gcp.enabled:
-    type: boolean
-    title: Enable GCP Integration
-    description: Enable Google Cloud Platform specific configurations
-    default: true
-
-  # gcp.fs.capacity:
-  #   type: string
-  #   title: FileStore Capacity
-  #   description: Storage capacity for GCP FileStore (e.g., 1Ti)
-  #   default: "1Ti"
-
-  # gcp.fs.fileshares.carbonDB1.fileStoreName:
-  #   type: string
-  #   title: FileStore Name for CarbonDB Instance 1
-  #   description: Name of the GCP FileStore for CarbonDB persistent storage (instance 1)
-  #   default: ""
-
-  # gcp.fs.fileshares.carbonDB1.fileShareName:
-  #   type: string
-  #   title: FileShare Name for CarbonDB Instance 1
-  #   description: Name of the file share within FileStore for CarbonDB (instance 1)
-  #   default: ""
-
-  # gcp.fs.fileshares.carbonDB1.ip:
-  #   type: string
-  #   title: FileStore IP for CarbonDB Instance 1
-  #   description: IP address of the FileStore for CarbonDB (instance 1)
-  #   default: ""
-
-  # gcp.fs.fileshares.solr1.fileStoreName:
-  #   type: string
-  #   title: FileStore Name for Solr Instance 1
-  #   description: Name of the GCP FileStore for Solr persistent storage (instance 1)
-  #   default: ""
-
-  # gcp.fs.fileshares.solr1.fileShareName:
-  #   type: string
-  #   title: FileShare Name for Solr Instance 1
-  #   description: Name of the file share within FileStore for Solr (instance 1)
-  #   default: ""
-
-  # gcp.fs.fileshares.solr1.ip:
-  #   type: string
-  #   title: FileStore IP for Solr Instance 1
-  #   description: IP address of the FileStore for Solr (instance 1)
-  #   default: ""
-
-  # gcp.fs.fileshares.carbonDB2.fileStoreName:
-  #   type: string
-  #   title: FileStore Name for CarbonDB Instance 2
-  #   description: Name of the GCP FileStore for CarbonDB persistent storage (instance 2)
-  #   default: ""
-
-  # gcp.fs.fileshares.carbonDB2.fileShareName:
-  #   type: string
-  #   title: FileShare Name for CarbonDB Instance 2
-  #   description: Name of the file share within FileStore for CarbonDB (instance 2)
-  #   default: ""
-
-  # gcp.fs.fileshares.carbonDB2.ip:
-  #   type: string
-  #   title: FileStore IP for CarbonDB Instance 2
-  #   description: IP address of the FileStore for CarbonDB (instance 2)
-  #   default: ""
-
-  # gcp.fs.fileshares.solr2.fileStoreName:
-  #   type: string
-  #   title: FileStore Name for Solr Instance 2
-  #   description: Name of the GCP FileStore for Solr persistent storage (instance 2)
-  #   default: ""
-
-  # gcp.fs.fileshares.solr2.fileShareName:
-  #   type: string
-  #   title: FileShare Name for Solr Instance 2
-  #   description: Name of the file share within FileStore for Solr (instance 2)
-  #   default: ""
-
-  # gcp.fs.fileshares.solr2.ip:
-  #   type: string
-  #   title: FileStore IP for Solr Instance 2
-  #   description: IP address of the FileStore for Solr (instance 2)
-  #   default: ""
-
-  # ACP Configuration
-  acp.enabled:
-    type: boolean
-    title: Enable ACP
-    description: Enable WSO2 API Manager Control Plane
-    default: true
-
-  # APK Configuration
-  apk.enabled:
-    type: boolean
-    title: Enable APK
-    description: Enable APK installation
-    default: true
-
-  # APK Agent Configuration
-  apkagent.enabled:
-    type: boolean
-    title: Enable APK Agent
-    description: Enable APIM APK Agent
-    default: true
-
 required:
   - name
   - namespace
-  - gcp.enabled
