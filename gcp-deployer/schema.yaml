@@ -20,14 +20,38 @@ x-google-marketplace:
     k8sVersion: ">=1.24.0"
 
   images:
-    deployer:
+    wso2am-acp:
       properties:
-        imageRegistry:
-          type: REGISTRY
-        imageRepo:
-          type: REPO_WITHOUT_REGISTRY
-        imageTag:
-          type: TAG
+        wso2amAcpImage:
+          type: FULL
+    apk-config-deployer-service:
+      properties:
+        configDeployerImage:
+          type: FULL
+    apk-adapter:
+      properties:
+        adapterImage:
+          type: FULL
+    apk-common-controller:
+      properties:
+        commonControllerImage:
+          type: FULL
+    apk-ratelimiter:
+      properties:
+        ratelimiterImage:
+          type: FULL
+    apk-router:
+      properties:
+        routerImage:
+          type: FULL
+    apk-enforcer:
+      properties:
+        enforcerImage:
+          type: FULL
+    apim-apk-agent:
+      properties:
+        apimApkAgentImage:
+          type: FULL
 
 properties:
   name:
