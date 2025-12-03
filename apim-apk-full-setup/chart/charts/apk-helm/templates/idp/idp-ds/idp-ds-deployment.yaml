@@ -93,7 +93,7 @@ spec:
       securityContext:
         seccompProfile:
           type: "RuntimeDefault"
-      volumes:
-        - name: tmp
-          emptyDir: {}
+      # volumes:
+      #   - name: tmp
+      #     emptyDir: {}
 {{- end -}}
